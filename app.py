@@ -1,29 +1,64 @@
 import streamlit as st
 import joblib
- 
-#load model in a variable
+
+# Load model
 model = joblib.load("iris_model.pkl")
- 
- 
-features = [[3.5, 4.5, 5, 2.5]]
-y = model.predict(features)
-print(y)
- 
-#Streamlit part
-st.title("Iris Classification")
-st.write("This webpage allows a user to enter iris flower petal lengths and widths and sepal lengths and widths and returns the iris class to him")
-sepal_length = st.number_input("Enter sepal length", min_value=0.0, max_value=10.0, step=0.1)
-sepal_width = st.number_input("Enter sepal width", min_value=0.0, max_value=10.0, step=0.1)
-petal_length = st.number_input("Enter petal length", min_value=0.0, max_value=10.0, step=0.1)
-petal_width = st.number_input("Enter petal width", min_value=0.0, max_value=10.0, step=0.1)
- 
+
+# Page config
+st.set_page_config(page_title="Iris Prediction App")
+
+# Styling (background + text + button color)
+st.markdown(
+    """
+    <style>
+    .stApp {
+        background-color: #f5f7fa;
+    }
+
+    /* Force text to be visible */
+    h1, h2, h3, h4, h5, h6, p, label {
+        color: #000000 !important;
+    }
+
+    /* Button styling */
+    div.stButton > button {
+        background-color: #87CEFA;  /* light blue */
+        color: black;
+        border-radius: 8px;
+        height: 3em;
+        width: 100%;
+        font-size: 16px;
+        border: none;
+    }
+
+    div.stButton > button:hover {
+        background-color: #6bbbe8;  /* slightly darker on hover */
+        color: black;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+# Title and description
+st.title("🌸 Iris Prediction")
+st.write(
+    "Provide the measurements of an iris flower below and click the predict button "
+    "to determine its species. This application uses a trained machine learning model "
+    "to make accurate predictions based on your inputs."
+)
+
+# Inputs
+sepal_length = st.number_input("Sepal Length", min_value=0.0, max_value=10.0, step=0.1)
+sepal_width = st.number_input("Sepal Width", min_value=0.0, max_value=10.0, step=0.1)
+petal_length = st.number_input("Petal Length", min_value=0.0, max_value=10.0, step=0.1)
+petal_width = st.number_input("Petal Width", min_value=0.0, max_value=10.0, step=0.1)
+
+# Prediction
 if st.button("Predict"):
     features = [[sepal_length, sepal_width, petal_length, petal_width]]
-    y = model.predict(features)
-    if y == 0:
-        y = "Iris-setosa"
-    elif y == 1:
-        y = "Iris-versicolor"
-    else:
-        y = "Iris-virginica"
-    st.write(f"The predicted iris species is: {y}")
+    prediction = model.predict(features)
+
+    species = ["🌼 Iris-setosa", "🌸 Iris-versicolor", "🌺 Iris-virginica"]
+
+    st.success(f"Predicted Species: {species[prediction[0]]}")
